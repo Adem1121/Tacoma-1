@@ -22,7 +22,7 @@ public class MonitorUtilTest {
     @Test
     public void testSendProgressMail(){
 
-        ftdisMonitor.sendProgressMail(10);
+        //ftdisMonitor.sendProgressMail(10);
 
     }
 

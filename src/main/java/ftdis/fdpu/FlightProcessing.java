@@ -7,6 +7,8 @@ import java.io.OutputStreamWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -132,7 +134,9 @@ public class FlightProcessing {
 
             // Prep date format
             Date date = new Date();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmm") ;
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd HHmm");
+            LocalDateTime progrStartDateTime;
+            LocalDateTime execStartDateTime = progrStartDateTime = LocalDateTime.now();
 
             // Configure filename and file output stream
             String fileName = inputFileName + " FlightData " + dateFormat.format(date) + ".txt";
@@ -296,13 +300,15 @@ public class FlightProcessing {
             // 04 Process Data
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             FlightProcessingThread flightProcessingThread = new FlightProcessingThread();
-
             MonitorUtil ftdisMonitor = new MonitorUtil();
-            double threadStart = timeStart, threadEnd = 0, progress = 0;
+            int progrLn = 2;
+            double threadStart = timeStart;
+            double threadEnd = 0.0;
+            double progress = 0.0;
             double absDuration = trackT - timeStart;
-            int threadDuration = (int) absDuration/noOfThreads;
-
+            int threadDuration = (int)absDuration / noOfThreads;
             ExecutorService es = Executors.newFixedThreadPool(noOfThreads);
+
             for (int i = 1; i <= noOfThreads; i++){
 
                 if(i != noOfThreads)
@@ -318,6 +324,7 @@ public class FlightProcessing {
             }
 
             // Initiate shut down and wait for threads to complete / terminate
+            System.out.println("Processing........ \n");
             es.shutdown();
 
             // Print progress to console while threads are processing
@@ -325,13 +332,12 @@ public class FlightProcessing {
 
                 if(multiThreadReturnlist.size() != lineItems){
                     lineItems = multiThreadReturnlist.size();
-
-                    progress = (lineItems/(1/cycleLn))/absDuration * 100;
-
-                    System.out.println("Progress... " + String.format(Locale.US, "%10.3f", progress)  + " %");
-
-                    // Send out progress updates
-                    // @50%
+                    if (Duration.between(progrStartDateTime, LocalDateTime.now()).getSeconds() >= (long)progrLn) {
+                        progress = (double)lineItems / (1.0D / cycleLn) / absDuration * 100.0D;
+                        ftdisMonitor.logProgress(execStartDateTime, progress);
+                        System.out.println("Progress... " + String.format(Locale.US, "%10.3f", progress) + " %");
+                        progrStartDateTime = LocalDateTime.now();
+                    }
                 }
 
 
@@ -341,7 +347,7 @@ public class FlightProcessing {
             es.awaitTermination(7, TimeUnit.DAYS);
 
             // Send out completion notice
-            ftdisMonitor.sendProgressMail(100);
+            //ftdisMonitor.sendProgressMail(100);
 
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // 05 Write Data to Output File

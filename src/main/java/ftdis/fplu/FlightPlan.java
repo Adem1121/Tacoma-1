@@ -564,7 +564,7 @@ public class FlightPlan {
                 //////////////////////////////////////////////////////////////////////
 
                 // Calculate distances
-                acc = 0.35;
+                acc = 0.50;
                 t = (PerfCalc.convertKts(SPD_CLIMB_CRUISE, "kts") - PerfCalc.convertKts(SPD_TRANS, "kts"))/acc;
                 d = (PerfCalc.convertKts(SPD_TRANS, "kts") * t) + ((acc / 2) * pow(t,2));
 
@@ -610,7 +610,7 @@ public class FlightPlan {
                 velEvent.setStartPt(startWpt.getLat(),startWpt.getLon());
                 velEvent.setEndPt(endWpt.getLat(), endWpt.getLon());
                 velEvent.setvAsi(PerfCalc.convertKts(SPD_CRUISE, "kts"));
-                velEvent.setvAsf(PerfCalc.convertKts(SPD_TRANS, "kts"));
+                velEvent.setvAsf(PerfCalc.convertKts(SPD_DESC, "kts"));
                 velEvent.setAcc(Double.NaN);
                 velEvents.add(velEvent);
             }
@@ -625,7 +625,7 @@ public class FlightPlan {
 
             velEvent = new EventChgAirspeed();
             velEvent.setEndPt(endWpt.getLat(), endWpt.getLon());
-            velEvent.setvAsi(PerfCalc.convertKts(SPD_TRANS, "kts"));
+            velEvent.setvAsi(PerfCalc.convertKts(SPD_DESC, "kts"));
             velEvent.setvAsf(PerfCalc.convertKts(FLAPS_1_SPD - 5, "kts"));
             velEvent.setAcc(acc);
             velEvents.add(velEvent);

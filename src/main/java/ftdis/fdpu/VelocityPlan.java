@@ -439,7 +439,7 @@ public class VelocityPlan implements Velocity{
     public void transform(){
         VelocitySegment velSgmt, itmSgmt;
         Waypoint startWpt, endWpt;
-        double startSpd, endSpd, waitSpd = 1E-2, waitDist; // = 0.01;
+        double startSpd, endSpd, waitSpd = 0.01, waitDist; // = 0.01;
         int s = 0, i = 1;
 
         // Loop through change airspeed events and create consecutive set of velocity segments

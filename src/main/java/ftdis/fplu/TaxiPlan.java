@@ -232,17 +232,17 @@ public class TaxiPlan {
                         if (thisWptVel < nextWptVel) {
                             // Match velocity at end of event to available acceleration distance
                             //if(accDist > nextWptDist){
-                                if(nextWptVel <= forcVel)
-                                    // Accelerate / Decelerate until next waypoint
-                                    nextWptVel = sqrt(pow(thisWptVel,2) + 2 * this.acceleration * nextWptDist);
-                                else
-                                    // Calculate max intermediary velocity that can be achieved between both waypoints
-                                    nextWptVel = sqrt(pow(thisWptVel,2) + 2 * this.acceleration * nextWptDist / 2);
+                            if(nextWptVel <= forcVel)
+                                // Accelerate / Decelerate until next waypoint
+                                nextWptVel = sqrt(pow(thisWptVel,2) + 2 * this.acceleration * nextWptDist);
+                            else
+                                // Calculate max intermediary velocity that can be achieved between both waypoints
+                                nextWptVel = sqrt(pow(thisWptVel,2) + 2 * this.acceleration * nextWptDist / 2);
 
-                                if(nextWptVel > this.taxiSpd)
-                                    nextWptVel = taxiSpd;
+                            if(nextWptVel > this.taxiSpd)
+                                nextWptVel = taxiSpd;
 
-                                velocity.set(w + 1, nextWptVel);
+                            velocity.set(w + 1, nextWptVel);
                             //}
 
                             velEventAcc = this.acceleration;
@@ -258,7 +258,7 @@ public class TaxiPlan {
                             velEvent.setOffset(thisWptHoldT);
                             velocityEvents.add(velEvent);
 
-                        // Deceleration event
+                            // Deceleration event
                         } else if(thisWptVel > nextWptVel) {
                             // Remove previous event to provide ample deceleration distance
 
@@ -345,7 +345,7 @@ public class TaxiPlan {
                     }
                 }
                 // Stop and Go: Deceleration, Acceleration, Deceleration events in case this and next wpt, are both holding points (i.e. velocity 0)
-                else if(thisWptVel == 0 && nextWptVel == 0 && w > 1){
+                else if(thisWptVel == 0 && nextWptVel == 0){
                     // Calculate max intermediary velocity that can be achieved between both waypoints
                     velInterm = sqrt(pow(thisWptVel,2) + 2 * this.acceleration * nextWptDist / 4);
 
@@ -430,16 +430,6 @@ public class TaxiPlan {
                             break;
                         }
                     }
-
-                    /*
-                    // Get event end point
-                    for(int i = velocityEvents.size() -1; i >= 0; i--){
-                        endEvent = velocityEvents.get(i);
-                        if(latPlan.getDist(thisEvent.getEndPt(), endEvent.getEndPt()) >= 0)
-                            break;
-                    }*/
-
-
 
                     // Merge events
                     startEvent.setEndPt(thisEvent.getEndPt().getLat(),thisEvent.getEndPt().getLon());

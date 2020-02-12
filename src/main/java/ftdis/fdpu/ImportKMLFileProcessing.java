@@ -206,11 +206,11 @@ public class ImportKMLFileProcessing {
                     turnDist = NavCalc.getDirectDist(waypoints.get(w-1),waypoints.get(w+1));
 
                     if(turnDist > 50)
-                        speed = "10";
-                    else if(turnDist < 50 && turnDist > 30)
                         speed = "8";
+                    else if(turnDist < 50 && turnDist > 30)
+                        speed = "6";
                     else
-                        speed = "5";
+                        speed = "3";
 
                     /*
                     Revise speeds shallow / small turns

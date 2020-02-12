@@ -251,8 +251,8 @@ public class AircraftControl {
                 vAsu = velocity.getVasu(refSgmt.getStartPt(), refSgmt.getEndPt());
                 sgmtDist = refSgmt.getDist();
                 sgmtT = sgmtDist/vAsu;
-                turnRate = 10; //10 degrees per second TODO Add to config.xml
-                wheelbase = 24.86; // TODO Add to config.xml. A330 wheelbase 24.86m (http://www.modernairliners.com/airbus-a330/airbus-a330-specs/)
+                turnRate = AIRCRAFT_WHEELBASE_TURNRATE;
+                wheelbase = AIRCRAFT_WHEELBASE;
                 //targetAngle = 45; //+-45 degrees max angle
                 targetAngle = toDegrees(asin(wheelbase/((TurnSegment) refSgmt).getRadius()));
 

@@ -34,7 +34,7 @@ public class Config {
                     LIGHTS_TAXI_OFF_INBOUND_DIST, LIGHTS_LANDING_ON_OUTBOUND_DIST, LIGHTS_LANDING_OFF_INBOUND_DIST, LIGHTS_LANDING_ALT,
                     CONTROL_TEST_TIME, CONTROL_TEST_DUR, CONTROL_TEST_BREAK, BANK_ANGLE_0_190, BANK_ANGLE_190_210, BANK_ANGLE_210_250,
                     BANK_ANGLE_250_999, ROLL_RATE_0_190, ROLL_RATE_190_210, ROLL_RATE_210_250, ROLL_RATE_250_999, AILERON_RATE_0_190,
-                    AILERON_RATE_190_210, AILERON_RATE_210_250, AILERON_RATE_250_999, PITCH_CLIMB, PITCH_CRUISE, PITCH_RATE_TAKEOFF, PITCH_RATE_0_150,
+                    AILERON_RATE_190_210, AILERON_RATE_210_250, AILERON_RATE_250_999, PITCH_CLIMB, PITCH_CRUISE, PITCH_RATE_TAKEOFF, PITCH_RATE_FLARE, PITCH_RATE_RETARD, PITCH_RATE_GROUND, PITCH_RATE_0_150,
                     PITCH_RATE_150_190, PITCH_RATE_190_250, PITCH_RATE_250_310, PITCH_RATE_310_999, CAT_MIN_DUR, CAT_MAX_DUR, CAT_MIN_PITCH,
                     CAT_MAX_PITCH, CAT_MIN_BANK, CAT_MAX_BANK, CAT_MIN_ALT, CAT_MAX_ALT;
 
@@ -44,8 +44,8 @@ public class Config {
     public static double   ALPHA_TAKEOFF_DEG, ALPHA_CLIMB_TRANS_DEG, ALPHA_CLIMB_DEF_DEG, ALPHA_DESC_DEF_DEG, ALPHA_FINAL_APP_DEG, DECEL_APP_FIX_INIT_APP_SPEED_DIST,
                             DECEL_APP_FIX_FINAL_APP_SPEED_DIST, FINAL_APP_FIX_DIST,FINAL_APP_FIX_DESC_DIST, ALPHA_RETARD_DEG, ALPHA_FLARE_DEG, ALT_DEP, ALT_INIT_CRUISE,
                             ALT_MID_CRUISE, ALT_FINAL_CRUISE, ALT_RETARD, ALT_FLARE, ALT_DEST, SPD_PUSHBACK,SPD_TAXI, SPD_ROTATE, SPD_LIFTOFF, SPD_CLIMBOUT, SPD_CLIMB_CRUISE,
-                            SPD_CRUISE, SPD_TRANS, SPD_FINAL_APP_FIX, SPD_APP, CAT_MAGN_TAKEOFF, CAT_FREQ_TAKEOFF, CAT_MAGN_CRUISE, CAT_FREQ_CRUISE, CAT_MAGN_INIT_APP,
-                            CAT_FREQ_INIT_APP, CAT_MAGN_FINAL_APP, CAT_FREQ_FINAL_APP, AIRCRAFT_PARK_TIME, ACC_PUSHBACK, ACC_TAXI, TAXI_TURN_BREAK_FRACT;
+                            SPD_CRUISE, SPD_TRANS, SPD_DESC, SPD_FINAL_APP_FIX, SPD_APP, CAT_MAGN_TAKEOFF, CAT_FREQ_TAKEOFF, CAT_MAGN_CRUISE, CAT_FREQ_CRUISE, CAT_MAGN_INIT_APP,
+                            CAT_FREQ_INIT_APP, CAT_MAGN_FINAL_APP, CAT_FREQ_FINAL_APP, AIRCRAFT_PARK_TIME, ACC_PUSHBACK, ACC_TAXI, TAXI_TURN_BREAK_FRACT, AIRCRAFT_WHEELBASE, AIRCRAFT_WHEELBASE_TURNRATE;
 
     public static String   DEP_ICAO, DEST_ICAO;
 
@@ -120,6 +120,9 @@ public class Config {
             PITCH_CLIMB = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_CLIMB"),"val"));
             PITCH_CRUISE = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_CRUISE"),"val"));
             PITCH_RATE_TAKEOFF = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_TAKEOFF"),"val"));
+            PITCH_RATE_FLARE = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_FLARE"),"val"));
+            PITCH_RATE_RETARD = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_RETARD"),"val"));
+            PITCH_RATE_GROUND = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_GROUND"),"val"));
             PITCH_RATE_0_150 = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_0_150"),"val"));
             PITCH_RATE_150_190 = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_150_190"),"val"));
             PITCH_RATE_190_250 = Double.parseDouble(getAttributeValue(findNode(fdpu.getChildNodes(),"PITCH_RATE_190_250"),"val"));
@@ -207,6 +210,8 @@ public class Config {
             Node fplu = findNode(configXML.getDocumentElement().getChildNodes(),"fplu");
 
             AIRCRAFT_TYPE = getAttributeValue(findNode(fplu.getChildNodes(),"AIRCRAFT_TYPE"),"val");
+            AIRCRAFT_WHEELBASE = Double.parseDouble(DOMUtil.getAttributeValue(DOMUtil.findNode(fplu.getChildNodes(), "AIRCRAFT_WHEELBASE"), "val"));
+            AIRCRAFT_WHEELBASE_TURNRATE = Double.parseDouble(DOMUtil.getAttributeValue(DOMUtil.findNode(fplu.getChildNodes(), "AIRCRAFT_WHEELBASE_TURNRATE"), "val"));
             DEP_ICAO = getAttributeValue(findNode(fplu.getChildNodes(),"DEP_ICAO"),"val");
             DEST_ICAO = getAttributeValue(findNode(fplu.getChildNodes(),"DEST_ICAO"),"val");
 
@@ -233,6 +238,7 @@ public class Config {
             SPD_CLIMB_CRUISE = Double.parseDouble(getAttributeValue(findNode(fplu.getChildNodes(),"SPD_CLIMB_CRUISE"),"val"));
             SPD_CRUISE = Double.parseDouble(getAttributeValue(findNode(fplu.getChildNodes(),"SPD_CRUISE"),"val"));
             SPD_TRANS = Double.parseDouble(getAttributeValue(findNode(fplu.getChildNodes(),"SPD_TRANS"),"val"));
+            SPD_DESC = Double.parseDouble(DOMUtil.getAttributeValue(DOMUtil.findNode(fplu.getChildNodes(), "SPD_DESC"), "val"));
             SPD_FINAL_APP_FIX = Double.parseDouble(getAttributeValue(findNode(fplu.getChildNodes(),"SPD_FINAL_APP_FIX"),"val"));
             SPD_APP = Double.parseDouble(getAttributeValue(findNode(fplu.getChildNodes(),"SPD_APP"),"val"));
 

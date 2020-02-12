@@ -250,7 +250,8 @@ public class AircraftAxis {
             s = vertical.getSgmtPos(thisSgmt);
 
 
-            // The pitch transition starts at the end of segment n (sgmtStart) and finishes in the succeeding segment
+            // NOTE
+            // The pitch transition STARTS AT THE END of segment n (sgmtStart) and FINISHES AT THE START of the succeeding segment
             // n+1 (sgmtEnd). Hence, the method must consider that one transition is executed across two segments.
             //
             //  Segment n         Start Trans.      Segment n+1     End Transition
@@ -266,7 +267,8 @@ public class AircraftAxis {
             // pitchDelayRatio 0.0 : Pitch transition ends at end point of sgmtStart
             //
 
-            if((lateral.getDist(thisSgmt.getStartPt(),wpt) < lateral.getDist(wpt,thisSgmt.getEndPt()) && s != 0) || s == (l-1))
+            // WHY IS THIS SO CRUCIAL. PLEASE EXPLAIN
+            if((lateral.getDist(thisSgmt.getStartPt(),wpt) < lateral.getDist(wpt,thisSgmt.getEndPt()) && s < l-4  && s != 0) || s >= (l-4))
                 s -= 1;
 
             sgmtStart = vertical.getSgmt(s);
@@ -280,17 +282,16 @@ public class AircraftAxis {
                     if(s == 0){
                         // Takeoff
                         this.pitchRate = PITCH_RATE_TAKEOFF;
-                        this.startPitch = PITCH_GROUND;
                         this.targetPitch = toDegrees(sgmtEnd.getAlpha()) + PerfCalc.getAngleOfAttack(velocity.getVasAtWpt(sgmtEnd.getStartPt()),1.0);
                         pitchDelayRatio = 0.65;
                     } else if(s > 0 && s < l-6) {
-                        // FlightS
+                        // Climb and Cruise Segments
                         this.pitchRate = PerfCalc.getPitchRateVas(velocity.getVasAtWpt(sgmtEnd.getStartPt()));
                         this.startPitch = toDegrees(sgmtStart.getAlpha()) + PerfCalc.getAngleOfAttack(velocity.getVasAtWpt(sgmtStart.getStartPt()),1.0);
                         this.targetPitch = toDegrees(sgmtEnd.getAlpha()) + PerfCalc.getAngleOfAttack(velocity.getVasAtWpt(sgmtEnd.getStartPt()),1.0);
                         pitchDelayRatio = 0.5;
                     } else if(s == l-6) {
-                        // Level Off Final Approach
+                        // Level Off Final Approach / Platform Altitude
                         this.pitchRate = PerfCalc.getPitchRateVas(velocity.getVasAtWpt(sgmtEnd.getStartPt()));
                         this.startPitch = toDegrees(sgmtStart.getAlpha()) + PerfCalc.getAngleOfAttack(velocity.getVasAtWpt(sgmtStart.getStartPt()), 1.0);
                         this.targetPitch = PITCH_CRUISE;
@@ -303,16 +304,16 @@ public class AircraftAxis {
                         pitchDelayRatio = 0.5;
                     } else if(s == l-4) {
                         // Retard
-                        this.pitchRate = PerfCalc.getPitchRateVas(velocity.getVasAtWpt(sgmtEnd.getStartPt()));
+                        this.pitchRate = PITCH_RATE_RETARD;
                         this.startPitch = PITCH_FINAL_APP;
                         this.targetPitch = PITCH_RETARD;
-                        pitchDelayRatio = 0.25;
+                        pitchDelayRatio = 1.0;
                     } else if(s == l-3) {
                         // Flare
-                        this.pitchRate = PerfCalc.getPitchRateVas(velocity.getVasAtWpt(sgmtEnd.getStartPt()));
+                        this.pitchRate = PITCH_RATE_FLARE;
                         this.startPitch = PITCH_RETARD;
                         this.targetPitch = PITCH_FLARE;
-                        pitchDelayRatio = 0.25;
+                        pitchDelayRatio = 1.0;
                     } else if(s == l-2) {
                         // Nose Down after landing
                         this.pitchRate = PerfCalc.getPitchRateVas(velocity.getVasAtWpt(sgmtEnd.getStartPt()));
@@ -347,7 +348,7 @@ public class AircraftAxis {
                 pitchChg = PerfCalc.getSigmoidVal(abs(this.targetPitch - this.startPitch), pitchChg, sigmoidSlope);
 
                 // Adjust for negative pitch and catch "over pitch"
-                if (this.targetPitch - this.startPitch < 0){
+                 if (this.targetPitch - this.startPitch < 0){
                     pitchChg *= -1;
 
                     if(this.startPitch + pitchChg < this.targetPitch)
@@ -412,7 +413,8 @@ public class AircraftAxis {
             // *********************************************
 
             // Adjust pitch angle by CATs (Clear Air Turbulence) effect
-            wptPitch += weather.getPitchDeviationAtWpt(wpt);
+            //if(s < l-4)
+             wptPitch += weather.getPitchDeviationAtWpt(wpt);
 
             return wptPitch;
         }catch(Exception e){

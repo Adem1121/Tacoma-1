@@ -654,7 +654,7 @@ public class FlightProcessingThread {
                     // Set throttle. Avoid using getEngineValAtWpt during first 10 seconds to avoid engine rev up inbetween thread breaks
                     throttle = arcrftEng.getEngineValAtWpt(pos,cycleLn);
 
-                    if (timeProc <= 10)
+                    if (timeProc <= 20)
                         throttle = arcrftEng.getEngineTargetValAtWpt(pos);
 
                     // Set lights and map to XPlights
